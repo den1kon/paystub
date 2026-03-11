@@ -16,7 +16,8 @@ return
             'user' => 'root',
             'pass' => 'password',
             'port' => '3306',
-            'charset' => 'utf8',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
         ],
         'development' => [
             'adapter' => 'mysql',
@@ -25,7 +26,8 @@ return
             'user' => 'root',
             'pass' => 'password',
             'port' => '3306',
-            'charset' => 'utf8',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
         ],
         'testing' => [
             'adapter' => 'mysql',
@@ -34,7 +36,8 @@ return
             'user' => 'root',
             'pass' => 'password',
             'port' => '3306',
-            'charset' => 'utf8',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
         ]
     ],
     'version_order' => 'creation'
