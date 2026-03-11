@@ -25,7 +25,9 @@ final class CreateProjectsMigration extends AbstractMigration
         ]);
 
         $table
-            ->addTimestamps()
+            /* ->addTimestamps() // Phinx makes updated_at nullable by default, which I don't want */
+            ->addColumn('created_at', 'timestamp', ['null' => false, 'default' => 'CURRENT_TIMESTAMP'])
+            ->addColumn('updated_at', 'timestamp', ['null' => false, 'default' => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'])
             ->addColumn('company_id', 'integer', ['null' => true, 'signed' => false])
             ->addColumn('name', 'string', ['limit' => 60, 'null' => false])
             ->addColumn('alias', 'string', ['limit' => 40, 'null' => true])
