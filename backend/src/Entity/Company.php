@@ -8,7 +8,7 @@ namespace App\Entity;
 
 use DateTime;
 
-class Company
+final class Company
 {
     private ?int $id = null;
     private DateTime $createdAt;
@@ -80,6 +80,11 @@ class Company
     public function setUpdatedAt(DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    public function setIsDeleted(bool $isDeleted): void
+    {
+        $this->isDeleted = $isDeleted;
     }
 
     public function delete(): void
