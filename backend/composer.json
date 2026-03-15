@@ -1,19 +1,22 @@
 {
-    "name": "dk/backend",
-    "type": "project",
-    "require": {
-        "symfony/dotenv": "^8.0",
-        "robmorgan/phinx": "^0.16.10"
-    },
-    "autoload": {
-        "psr-4": {
-            "Dk\\Backend\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "den1kon",
-            "email": "dkondratiuk06@gmail.com"
-        }
-    ]
+  "name": "dk/backend",
+  "type": "project",
+  "require": {
+    "symfony/dotenv": "^8.0",
+    "robmorgan/phinx": "^0.16.10"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "den1kon",
+      "email": "dkondratiuk06@gmail.com"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^13.0"
+  }
 }
