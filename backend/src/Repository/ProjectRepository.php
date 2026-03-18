@@ -44,7 +44,7 @@ final class ProjectRepository
 
     private function hydrate(array $row): Project
     {
-        if (!isset($row['id'], $row['company_id'], $row['created_at'], $row['updated_at'], $row['name'], $row['is_deleted'])) {
+        if (!isset($row['id'], $row['created_at'], $row['updated_at'], $row['name'], $row['is_deleted'])) {
             throw new InvalidArgumentException('Missing required fields in projects row');
         }
 
@@ -112,7 +112,7 @@ final class ProjectRepository
             $result = $this->findAllStmt->execute();
 
             if (!$result) {
-                throw new RuntimeException('Failed to find all project: ' . implode(', ', $this->findAllStmt->errorInfo()));
+                throw new RuntimeException('Failed to find all projects: ' . implode(', ', $this->findAllStmt->errorInfo()));
             }
 
             $rows = $this->findAllStmt->fetchAll(PDO::FETCH_ASSOC);
