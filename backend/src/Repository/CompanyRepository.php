@@ -69,7 +69,7 @@ final class CompanyRepository
             $result = $this->createStmt->execute([':name' => $company->getName(), ':alias' => $company->getAlias()]);
 
             if (!$result) {
-                throw new RuntimeException('Failed to insert company: ' . ', ' . $this->createStmt->errorInfo());
+                throw new RuntimeException('Failed to insert company: ' . implode(', ', $this->createStmt->errorInfo()));
             }
 
             $id = (int) $this->pdo->lastInsertId();
@@ -92,7 +92,7 @@ final class CompanyRepository
             $result = $this->findByIdStmt->execute([':id' => $id]);
 
             if (!$result) {
-                throw new RuntimeException('Failed to find company by id: ' . ', ' . $this->findByIdStmt->errorInfo());
+                throw new RuntimeException('Failed to find company by id: ' . implode(', ', $this->findByIdStmt->errorInfo()));
             }
 
             $row = $this->findByIdStmt->fetch(PDO::FETCH_ASSOC);
@@ -113,7 +113,7 @@ final class CompanyRepository
             $result = $this->findAllStmt->execute();
 
             if (!$result) {
-                throw new RuntimeException('Failed to find all companies: ' . ', ' . $this->findAllStmt->errorInfo());
+                throw new RuntimeException('Failed to find all companies: ' . implode(', ', $this->findAllStmt->errorInfo()));
             }
 
             $rows = $this->findAllStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -142,7 +142,7 @@ final class CompanyRepository
             ]);
 
             if (!$result) {
-                throw new RuntimeException('Failed to update company: ' . ', ' . $this->updateStmt->errorInfo());
+                throw new RuntimeException('Failed to update company: ' . implode(', ', $this->updateStmt->errorInfo()));
             }
 
             $updated = $this->findById($company->getId());
@@ -165,7 +165,7 @@ final class CompanyRepository
             ]);
 
             if (!$result) {
-                throw new RuntimeException('Failed to soft-delete company: ' . ', ' . $this->deleteStmt->errorInfo());
+                throw new RuntimeException('Failed to soft-delete company: ' . implode(', ', $this->deleteStmt->errorInfo()));
             }
 
             $deleted = $this->findById($id);
@@ -188,7 +188,7 @@ final class CompanyRepository
             ]);
 
             if (!$result) {
-                throw new RuntimeException('Failed to hard-delete company: ' . ', ' . $this->hardDeleteStmt->errorInfo());
+                throw new RuntimeException('Failed to hard-delete company: ' . implode(', ', $this->hardDeleteStmt->errorInfo()));
             }
         } catch (PDOException $e) {
             throw new RuntimeException('Database error during hard-deleting company: ' . $e->getMessage(), 0, $e);
