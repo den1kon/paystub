@@ -64,7 +64,10 @@ final class CompanyRepository
     public function create(Company $company): Company
     {
         try {
-            $result = $this->createStmt->execute([':name' => $company->getName(), ':alias' => $company->getAlias()]);
+            $result = $this->createStmt->execute([
+                ':name' => $company->getName(),
+                ':alias' => $company->getAlias()
+            ]);
 
             if (!$result) {
                 throw new RuntimeException('Failed to insert company: ' . implode(', ', $this->createStmt->errorInfo()));

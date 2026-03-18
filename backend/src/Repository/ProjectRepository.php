@@ -65,7 +65,11 @@ final class ProjectRepository
     public function create(Project $project): Project
     {
         try {
-            $result = $this->createStmt->execute([':company_id' => $project->getCompanyId(), ':name' => $project->getName(), ':alias' => $project->getAlias()]);
+            $result = $this->createStmt->execute([
+                ':company_id' => $project->getCompanyId(),
+                ':name' => $project->getName(),
+                ':alias' => $project->getAlias()
+            ]);
 
             if (!$result) {
                 throw new RuntimeException('Failed to insert project: ' . implode(', ', $this->createStmt->errorInfo()));
