@@ -157,22 +157,18 @@ final class CompanyRepository
         }
     }
 
-    public function delete(Company $company): Company
+    public function delete(int $id): Company
     {
-        if ($company->getId() === null) {
-            throw new InvalidArgumentException('Failed to soft-delete company with no ID.');
-        }
-
         try {
             $result = $this->deleteStmt->execute([
-                ':id' => $company->getId()
+                ':id' => $id
             ]);
 
             if (!$result) {
                 throw new RuntimeException('Failed to soft-delete company: ' . ', ' . $this->deleteStmt->errorInfo());
             }
 
-            $deleted = $this->findById($company->getId());
+            $deleted = $this->findById($id);
 
             if ($deleted === null) {
                 throw new RuntimeException('Failed to retrieve soft-deleted company.');
