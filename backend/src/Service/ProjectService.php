@@ -49,7 +49,7 @@ final class ProjectService
         }
 
         if ($company->isDeleted()) {
-            throw new InvalidArgumentException('Cannot assign project to a delete company.');
+            throw new InvalidArgumentException('Cannot assign project to a deleted company.');
         }
     }
 
