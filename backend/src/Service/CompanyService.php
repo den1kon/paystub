@@ -33,7 +33,6 @@ final class CompanyService
             }
 
             throw new InvalidArgumentException(json_encode($messages));
-
         }
     }
 
