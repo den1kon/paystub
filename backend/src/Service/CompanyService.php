@@ -8,35 +8,40 @@ use App\Entity\Company;
 use App\Repository\CompanyRepository;
 use InvalidArgumentException;
 use RuntimeException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class CompanyService
 {
     private CompanyRepository $companyRepository;
+    private ValidatorInterface $validator;
 
-    public function __construct(CompanyRepository $companyRepository)
+    public function __construct(CompanyRepository $companyRepository, ValidatorInterface $validator)
     {
         $this->companyRepository = $companyRepository;
+        $this->validator = $validator;
     }
 
-    private function validateCompanyData(string $name, ?string $alias = null): void
+    private function validateCompanyInstance(Company $company): void
     {
-        if (empty(trim($name))) {
-            throw new InvalidArgumentException('Company name cannot be empty.');
-        }
+        $errors = $this->validator->validate($company);
 
-        if (strlen($name) > 60) {
-            throw new InvalidArgumentException('Company name must not exceed 60 characters.');
-        }
+        if (count($errors) > 0) {
+            $messages = [];
 
-        if ($alias !== null && strlen($alias) > 40) {
-            throw new InvalidArgumentException('Company alias must not exceed 40 characters.');
+            foreach ($errors as $error) {
+                $messages[$error->getPropertyPath()] = $error->getMessage();
+            }
+
+            throw new InvalidArgumentException(json_encode($messages));
+
         }
     }
 
     public function createCompany(string $name, ?string $alias = null): Company
     {
-        $this->validateCompanyData($name, $alias);
         $company = new Company($name, $alias);
+        $this->validateCompanyInstance($company);
+
         return $this->companyRepository->create($company);
     }
 
@@ -60,10 +65,11 @@ final class CompanyService
     {
         $company = $this->getCompany($id);
 
-        $this->validateCompanyData($name, $alias);
-
         $company->setName($name);
         $company->setAlias($alias);
+
+        $this->validateCompanyInstance($company);
+
 
         return $this->companyRepository->update($company);
     }

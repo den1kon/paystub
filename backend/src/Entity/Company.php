@@ -5,14 +5,27 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use DateTime;
+use Symfony\Component\Validator\Constraints as Assert;
 
 final class Company
 {
     private ?int $id = null;
     private DateTime $createdAt;
     private DateTime $updatedAt;
+
+    #[Assert\NotBlank(message: 'Company name cannot be empty.')]
+    #[Assert\Length(
+        max: 60,
+        maxMessage: 'Company name must not exceed {{ limit }} characters.',
+    )]
     private string $name;
+
+    #[Assert\Length(
+        max: 40,
+        maxMessage: 'Company alias must not exceed {{ limit }} characters.',
+    )]
     private ?string $alias = null;
+
     private bool $isDeleted = false;
 
     public function __construct(
