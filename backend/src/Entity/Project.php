@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use DateTime;
+use Symfony\Component\Validator\Constraints as Assert;
 
 final class Project
 {
@@ -12,8 +13,20 @@ final class Project
     private ?int $companyId = null;
     private DateTime $createdAt;
     private DateTime $updatedAt;
+
+    #[Assert\NotBlank(message: 'Project name cannot be empty.')]
+    #[Assert\Length(
+        max: 60,
+        maxMessage: 'Project name must not exceed {{ limit }} characters.',
+    )]
     private string $name;
+
+    #[Assert\Length(
+        max: 40,
+        maxMessage: 'Project alias must not exceed {{ limit }} characters.',
+    )]
     private ?string $alias = null;
+
     private bool $isDeleted = false;
 
     public function __construct(

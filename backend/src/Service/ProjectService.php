@@ -9,30 +9,33 @@ use App\Repository\ProjectRepository;
 use App\Repository\CompanyRepository;
 use InvalidArgumentException;
 use RuntimeException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class ProjectService
 {
     private ProjectRepository $projectRepository;
     private CompanyRepository $companyRepository;
+    private ValidatorInterface $validator;
 
-    public function __construct(ProjectRepository $projectRepository, CompanyRepository $companyRepository)
+    public function __construct(ProjectRepository $projectRepository, CompanyRepository $companyRepository, ValidatorInterface $validator)
     {
         $this->projectRepository = $projectRepository;
         $this->companyRepository = $companyRepository;
+        $this->validator = $validator;
     }
 
-    private function validateProjectData(string $name, ?string $alias = null): void
+    private function validateProjectInstance(Project $project): void
     {
-        if (empty(trim($name))) {
-            throw new InvalidArgumentException('Project name cannot be empty.');
-        }
+        $errors = $this->validator->validate($project);
 
-        if (strlen($name) > 60) {
-            throw new InvalidArgumentException('Project name must not exceed 60 characters.');
-        }
+        if (count($errors) > 0) {
+            $messages = [];
 
-        if ($alias !== null && strlen($alias) > 40) {
-            throw new InvalidArgumentException('Project alias must not exceed 40 characters.');
+            foreach ($errors as $error) {
+                $messages[$error->getPropertyPath()] = $error->getMessage();
+            }
+
+            throw new InvalidArgumentException(json_encode($messages));
         }
     }
 
@@ -55,9 +58,11 @@ final class ProjectService
 
     public function createProject(string $name, ?int $companyId = null, ?string $alias = null): Project
     {
-        $this->validateProjectData($name, $alias);
         $this->validateCompanyId($companyId);
+
         $project = new Project($name, $companyId, $alias);
+        $this->validateProjectInstance($project);
+
         return $this->projectRepository->create($project);
     }
 
@@ -81,12 +86,13 @@ final class ProjectService
     {
         $project = $this->getProject($id);
 
-        $this->validateProjectData($name, $alias);
         $this->validateCompanyId($companyId);
 
         $project->setName($name);
         $project->setAlias($alias);
         $project->setCompanyId($companyId);
+
+        $this->validateProjectInstance($project);
 
         return $this->projectRepository->update($project);
     }
