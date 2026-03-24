@@ -3,7 +3,8 @@
   "type": "project",
   "require": {
     "symfony/dotenv": "^8.0",
-    "robmorgan/phinx": "^0.16.10"
+    "robmorgan/phinx": "^0.16.10",
+    "symfony/validator": "^8.0"
   },
   "autoload": {
     "psr-4": {
