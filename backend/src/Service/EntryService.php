@@ -10,22 +10,33 @@ use App\Repository\ProjectRepository;
 use InvalidArgumentException;
 use RuntimeException;
 use DateTime;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class EntryService
 {
     private EntryRepository $entryRepository;
     private ProjectRepository $projectRepository;
+    private ValidatorInterface $validator;
 
-    public function __construct(EntryRepository $entryRepository, ProjectRepository $projectRepository)
+    public function __construct(EntryRepository $entryRepository, ProjectRepository $projectRepository, ValidatorInterface $validator)
     {
         $this->entryRepository = $entryRepository;
         $this->projectRepository = $projectRepository;
+        $this->validator = $validator;
     }
 
-    private function validateEntryData(DateTime $startedAt, DateTime $endedAt): void
+    private function validateEntryInstance(Entry $entry): void
     {
-        if ($startedAt >= $endedAt) {
-            throw new InvalidArgumentException('Start time must be before end time.');
+        $errors = $this->validator->validate($entry);
+
+        if (count($errors) > 0) {
+            $messages = [];
+
+            foreach ($errors as $error) {
+                $messages[$error->getPropertyPath()] = $error->getMessage();
+            }
+
+            throw new InvalidArgumentException(json_encode($messages));
         }
     }
 
@@ -48,9 +59,9 @@ final class EntryService
 
     public function createEntry(DateTime $startedAt, DateTime $endedAt, ?int $projectId = null): Entry
     {
-        $this->validateEntryData($startedAt, $endedAt);
         $this->validateProjectId($projectId);
         $entry = new Entry($startedAt, $endedAt, $projectId);
+        $this->validateEntryInstance($entry);
         return $this->entryRepository->create($entry);
     }
 
@@ -74,12 +85,13 @@ final class EntryService
     {
         $entry = $this->getEntry($id);
 
-        $this->validateEntryData($startedAt, $endedAt);
         $this->validateProjectId($projectId);
 
         $entry->setStartedAt($startedAt);
         $entry->setEndedAt($endedAt);
         $entry->setProjectId($projectId);
+
+        $this->validateEntryInstance($entry);
 
         return $this->entryRepository->update($entry);
     }

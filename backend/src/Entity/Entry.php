@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use DateTime;
+use Symfony\Component\Validator\Constraints as Assert;
 
 final class Entry
 {
@@ -24,6 +25,12 @@ final class Entry
         $this->startedAt = $startedAt;
         $this->endedAt = $endedAt;
         $this->projectId = $projectId;
+    }
+
+    #[Assert\IsTrue(message: 'Start time must be before end time.')]
+    public function isTimeRangeValid(): bool
+    {
+        return $this->startedAt < $this->endedAt;
     }
 
     // Getters/Setters
